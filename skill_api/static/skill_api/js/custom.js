@@ -19,21 +19,17 @@ $(document).ready(function () {
     $(".add-card input.new-submit").click(function () {
         var $inputText = $("input#name", $(this).parent());
         var skillName = $inputText.val();
-        addSkill(skillName, function () {
+        postSkill(skillName, function (skill) {
             $inputText.val("");
-            // var $skillBox = $('<div class="card skill z-depth-0"><div class="row"><div class="input-field col s4"><input id="name" placeholder="Name" name="name" type="text" ' +
-            //     'disabled="disabled"></div><span class ="options"><i class="material-icons edit">edit</i><i class="material-icons delete">delete</i></span><input type="submit" class="flat-btn submit"><div class="approve"><i class="material-icons">done</i><span id="txt">Approve</span></div><div class="reject"> <i class="material-icons">clear</i><span id="txt">Reject</span></div></div></div>');
-            // $("input#name", $skillBox).val(skillName);
-            // $(".approve", $skillBox).css("color", "#42b85f");
-            // $(".approve span#txt", $skillBox).text("Approved");
-            // $(".skills-list-card").prepend($skillBox);
-            // updateListeners();
-            fetchSkills();
+            addSkillToList(skill);
+            updateListeners();
+            // fetchSkills();
             makeToast('New skill added');
         });
     });
     fetchSkills();
 });
+
 
 function fetchSkills(searchQuery) {
     var url = "/api/skill";
@@ -47,19 +43,7 @@ function fetchSkills(searchQuery) {
             type: "GET",
             success: function (result) {
                 $(result).each(function (i, skill) {
-                    var $skillBox = $('<div class="card skill z-depth-0"><div class="row"><div class="input-field col s4"><input id="name" placeholder="Name" name="name" type="text" ' +
-                        'disabled="disabled"></div><span class ="options"><i class="material-icons edit">edit</i><i class="material-icons delete">delete</i></span><input type="submit" class="flat-btn submit"><div class="approve"><i class="material-icons">done</i><span id="txt">Approve</span></div><div class="reject"> <i class="material-icons">clear</i><span id="txt">Reject</span></div></div></div>');
-                    $("input#name", $skillBox).val(skill.name);
-                    if (skill.approved) {
-                        $(".approve", $skillBox).css("color", "#42b85f");
-                        $(".approve span#txt", $skillBox).text("Approved");
-                    } else {
-                        $(".reject", $skillBox).css("color", "#f0463b");
-                        $(".reject span#txt", $skillBox).text("Rejected");
-                    }
-                    $("input.submit", $skillBox).data("id", skill.id);
-                    $("input.submit", $skillBox).data("approved", skill.approved);
-                    $(".skills-list-card").append($skillBox);
+                    addSkillToList(skill);
                 });
                 updateListeners();
             },
@@ -67,6 +51,22 @@ function fetchSkills(searchQuery) {
                 console.log(err);
             }
         });
+}
+
+function addSkillToList(skill) {
+    var $skillBox = $('<div class="card skill z-depth-0"><div class="row"><div class="input-field col s4"><input id="name" placeholder="Name" name="name" type="text" ' +
+        'disabled="disabled"></div><span class ="options"><i class="material-icons edit">edit</i><i class="material-icons delete">delete</i></span><input type="submit" class="flat-btn submit"><div class="approve"><i class="material-icons">done</i><span id="txt">Approve</span></div><div class="reject"> <i class="material-icons">clear</i><span id="txt">Reject</span></div></div></div>');
+    $("input#name", $skillBox).val(skill.name);
+    if (skill.approved) {
+        $(".approve", $skillBox).css("color", "#42b85f");
+        $(".approve span#txt", $skillBox).text("Approved");
+    } else {
+        $(".reject", $skillBox).css("color", "#f0463b");
+        $(".reject span#txt", $skillBox).text("Rejected");
+    }
+    $("input.submit", $skillBox).data("id", skill.id);
+    $("input.submit", $skillBox).data("approved", skill.approved);
+    $(".skills-list-card").prepend($skillBox);
 }
 
 function updateSkill(id, updatedName, onSuccess) {
@@ -113,7 +113,7 @@ function updateSkillStatus(id, status, onSuccess) {
         });
 }
 
-function addSkill(skillName, onSuccess) {
+function postSkill(skillName, onSuccess) {
     var url = "/api/skill";
     var csrftoken = Cookies.get('csrftoken');
     $.ajax(
@@ -124,8 +124,8 @@ function addSkill(skillName, onSuccess) {
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('X-CSRFToken', csrftoken);
             },
-            success: function () {
-                onSuccess();
+            success: function (result) {
+                onSuccess(result);
             },
             error: function (xhr, status, err) {
                 console.log(err);

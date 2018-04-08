@@ -108,8 +108,34 @@ nav .brand-logo {
     clear: both;
 }
 
+.add-card .content {
+    padding-left: 15px;
+}
+
+.add-card .approve {
+    display: inline-flex;
+    position: absolute;
+    margin-top: 23px;
+    margin-left: 50px;
+    cursor: pointer;
+    color: #42b85f;
+    font-size: 17px;
+}
+
+.add-card .approve i.material-icons {
+    padding-top: 1px;
+    padding-right: 5px;
+}
+
+.add-card .new-submit {
+
+    margin: 22px auto;
+    display: inline-block;
+}
+
 .skills-list-card {
     margin-top: 15px;
+    background-color: #ebeced;
     clear: both;
 }
 
@@ -117,28 +143,86 @@ nav .brand-logo {
     margin-bottom: 0 !important;
 }
 
-.add-card .content {
-    padding-left: 15px;
-}
-
 input[type=text]:disabled {
     border-bottom: 0 !important;
 }
 
 .skills-list-card i.edit {
-    margin: 22px auto;
+    margin: 20px auto;
     font-size: 18px;
     color: #777;
     cursor: pointer;
+    display: inline-block;
+}
+
+.skills-list-card i.delete {
+    margin: 20px 20px;
+    font-size: 18px;
+    color: #777;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.skills-list-card .options {
     display: none;
+!important;
 }
 
 .skills-list-card input.submit {
-    margin: 22px auto;
+    margin: 20px auto;
     display: none;
 }
 
-.new-submit{
-    margin : 22px;
-    display :inline-block;
+.skills-list-card input#name {
+    color: #7c7d7e;
 }
+
+.skill {
+    margin: 0 0 1px;
+    box-shadow: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.14)
+}
+
+.skill .row {
+    padding-left: 15px;
+}
+
+.skill .approve {
+    right: 0;
+    display: inline-flex;
+    position: absolute;
+    margin-top: 20px;
+    margin-right: 150px;
+    cursor: pointer;
+    color: #b2b4b6;
+    font-size: 17px;
+}
+
+.skill .reject {
+    right: 0;
+    display: inline-flex;
+    position: absolute;
+    margin-top: 20px;
+    margin-right: 30px;
+    cursor: pointer;
+    color: #b2b4b6;
+    font-size: 17px;
+}
+
+.skill .approve i.material-icons {
+    padding-top: 1px;
+    padding-right: 5px;
+}
+
+.skill .reject i.material-icons {
+    padding-top: 1px;
+    padding-right: 5px;
+}
+
+.input-field {
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+

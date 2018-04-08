@@ -1,1 +1,1 @@
-web: gunicorn skill_test.wsgi
+web: gunicorn skill_test.wsgi --log-file -

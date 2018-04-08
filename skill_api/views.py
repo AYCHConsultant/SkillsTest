@@ -13,7 +13,7 @@ class SkillCreateListView(generics.ListCreateAPIView):
         query = self.request.GET.get('q')
         skills = SkillInfo.objects.all()
         if query:
-            skills = skills.filter(name__contains=query)
+            skills = skills.filter(name__icontains=query)
         return skills
 
 

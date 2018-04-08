@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <link rel="stylesheet" href="{% static "skill_api/css/custom.css" %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Home</title>
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper">
+        <a href="#" class="brand-logo">Logo</a>
+    </div>
+</nav>
+
+<div class="main">
+    <div class="search-wrapper">
+        <input id="search" placeholder="Search"><i class="material-icons search">search</i>
+    </div>
+    <div class="add-btn">
+        <button id="add-button" class="flat-btn">Add</button>
+    </div>
+    <div class="add-card card white darken-1">
+        <div class="content">
+            <div class="row">
+                <div class="input-field col s4">
+                    <input id="name" name="name" type="text" placeholder="Name">
+                </div>
+                <input type="submit" class="new-submit flat-btn">
+                <div class="approve">
+                    <i class="material-icons">done</i>Approved
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="skills-list-card ">
+
+    </div>
+</div>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="{% static "skill_api/js/custom.js" %}"></script>
+
+</html>

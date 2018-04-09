@@ -185,7 +185,7 @@ function updateListeners() {
         console.log($parent);
         $("div input#name", $parent.parent()).prop('disabled', false);
         $("input.submit", $parent.parent()).css("display", "inline-block");
-        $(this).hide();
+        // $(this).hide();
         $parent.hide();//parent is span.options
     });
 
@@ -199,6 +199,7 @@ function updateListeners() {
         } else {
             updateSkill($(this).data("id"), newName, function () {
                 $self.hide();
+                $("span.options",$self.parent()).prop("display","inline-block");
                 $inputText.prop('disabled', true);
                 makeToast('changes made');
             });

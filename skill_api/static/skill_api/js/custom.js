@@ -10,9 +10,10 @@ $(document).ready(function () {
     var finalSearchKey;
     $searchInput.keyup(function (event) {
         finalSearchKey = $(this).val().trim().toLowerCase();
-        console.log(initialSearchKey);
+        // console.log(initialSearchKey);
         if (initialSearchKey !== finalSearchKey)
-            fetchSkills(finalSearchKey);
+            // fetchSkills(finalSearchKey);  // unoptimised search
+            search(finalSearchKey);         //optimised
         initialSearchKey = finalSearchKey;
     });
     // new skill addition
@@ -30,6 +31,19 @@ $(document).ready(function () {
     fetchSkills();
 });
 
+function search(searchKey){
+    // console.log(searchKey);
+    $("input#name").each(function(){
+       var skill=$(this).val();
+        console.log(skill);
+        if(skill.toLowerCase().indexOf(searchKey)<0){
+               $(this).parent().parent().parent().hide();
+           }
+           else{
+            $(this).parent().parent().parent().css("display","block");
+        }
+    });
+}
 
 function fetchSkills(searchQuery) {
     var url = "/api/skill";

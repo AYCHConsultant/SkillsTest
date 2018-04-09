@@ -10,30 +10,44 @@ $(document).ready(function () {
     var finalSearchKey;
     $searchInput.keyup(function (event) {
         finalSearchKey = $(this).val().trim().toLowerCase();
-        console.log(initialSearchKey);
+        // console.log(initialSearchKey);
         if (initialSearchKey !== finalSearchKey)
-            fetchSkills(finalSearchKey);
+        // fetchSkills(finalSearchKey);  // unoptimised search
+            search(finalSearchKey);         //optimised
         initialSearchKey = finalSearchKey;
     });
     // new skill addition
     $(".add-card input.new-submit").click(function () {
         var $inputText = $("input#name", $(this).parent());
         var skillName = $inputText.val();
-        addSkill(skillName, function () {
-            $inputText.val("");
-            // var $skillBox = $('<div class="card skill z-depth-0"><div class="row"><div class="input-field col s4"><input id="name" placeholder="Name" name="name" type="text" ' +
-            //     'disabled="disabled"></div><span class ="options"><i class="material-icons edit">edit</i><i class="material-icons delete">delete</i></span><input type="submit" class="flat-btn submit"><div class="approve"><i class="material-icons">done</i><span id="txt">Approve</span></div><div class="reject"> <i class="material-icons">clear</i><span id="txt">Reject</span></div></div></div>');
-            // $("input#name", $skillBox).val(skillName);
-            // $(".approve", $skillBox).css("color", "#42b85f");
-            // $(".approve span#txt", $skillBox).text("Approved");
-            // $(".skills-list-card").prepend($skillBox);
-            // updateListeners();
-            fetchSkills();
-            makeToast('New skill added');
-        });
+        if (skillName.trim() === "") {
+            alert("Skill should not be empty");
+        } else {
+            postSkill(skillName, function (skill) {
+                $inputText.val("");
+                addSkillToList(skill);
+                updateListeners();
+                // fetchSkills();
+                makeToast('New skill added');
+            });
+        }
     });
     fetchSkills();
 });
+
+function search(searchKey) {
+    // console.log(searchKey);
+    $("input#name").each(function () {
+        var skill = $(this).val();
+        console.log(skill);
+        if (skill.toLowerCase().indexOf(searchKey) < 0) {
+            $(this).parent().parent().parent().hide();
+        }
+        else {
+            $(this).parent().parent().parent().css("display", "block");
+        }
+    });
+}
 
 function fetchSkills(searchQuery) {
     var url = "/api/skill";
@@ -47,19 +61,7 @@ function fetchSkills(searchQuery) {
             type: "GET",
             success: function (result) {
                 $(result).each(function (i, skill) {
-                    var $skillBox = $('<div class="card skill z-depth-0"><div class="row"><div class="input-field col s4"><input id="name" placeholder="Name" name="name" type="text" ' +
-                        'disabled="disabled"></div><span class ="options"><i class="material-icons edit">edit</i><i class="material-icons delete">delete</i></span><input type="submit" class="flat-btn submit"><div class="approve"><i class="material-icons">done</i><span id="txt">Approve</span></div><div class="reject"> <i class="material-icons">clear</i><span id="txt">Reject</span></div></div></div>');
-                    $("input#name", $skillBox).val(skill.name);
-                    if (skill.approved) {
-                        $(".approve", $skillBox).css("color", "#42b85f");
-                        $(".approve span#txt", $skillBox).text("Approved");
-                    } else {
-                        $(".reject", $skillBox).css("color", "#f0463b");
-                        $(".reject span#txt", $skillBox).text("Rejected");
-                    }
-                    $("input.submit", $skillBox).data("id", skill.id);
-                    $("input.submit", $skillBox).data("approved", skill.approved);
-                    $(".skills-list-card").append($skillBox);
+                    addSkillToList(skill);
                 });
                 updateListeners();
             },
@@ -67,6 +69,22 @@ function fetchSkills(searchQuery) {
                 console.log(err);
             }
         });
+}
+
+function addSkillToList(skill) {
+    var $skillBox = $('<div class="card skill z-depth-0"><div class="row"><div class="input-field col s4"><input id="name" placeholder="Name" name="name" type="text" ' +
+        'disabled="disabled"></div><span class ="options"><i class="material-icons edit">edit</i><i class="material-icons delete">delete</i></span><input type="submit" class="flat-btn submit"><div class="approve"><i class="material-icons">done</i><span id="txt">Approve</span></div><div class="reject"> <i class="material-icons">clear</i><span id="txt">Reject</span></div></div></div>');
+    $("input#name", $skillBox).val(skill.name);
+    if (skill.approved) {
+        $(".approve", $skillBox).css("color", "#42b85f");
+        $(".approve span#txt", $skillBox).text("Approved");
+    } else {
+        $(".reject", $skillBox).css("color", "#f0463b");
+        $(".reject span#txt", $skillBox).text("Rejected");
+    }
+    $("input.submit", $skillBox).data("id", skill.id);
+    $("input.submit", $skillBox).data("approved", skill.approved);
+    $(".skills-list-card").prepend($skillBox);
 }
 
 function updateSkill(id, updatedName, onSuccess) {
@@ -113,7 +131,7 @@ function updateSkillStatus(id, status, onSuccess) {
         });
 }
 
-function addSkill(skillName, onSuccess) {
+function postSkill(skillName, onSuccess) {
     var url = "/api/skill";
     var csrftoken = Cookies.get('csrftoken');
     $.ajax(
@@ -124,8 +142,8 @@ function addSkill(skillName, onSuccess) {
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('X-CSRFToken', csrftoken);
             },
-            success: function () {
-                onSuccess();
+            success: function (result) {
+                onSuccess(result);
             },
             error: function (xhr, status, err) {
                 console.log(err);
@@ -176,11 +194,15 @@ function updateListeners() {
         var $self = $(this);
         var $inputText = $("input#name", $self.parent());
         var newName = $inputText.val();
-        updateSkill($(this).data("id"), newName, function () {
-            $self.hide();
-            $inputText.prop('disabled', true);
-            makeToast('changes made');
-        });
+        if (newName.trim() === "") {
+            alert("Skill should not be empty");
+        } else {
+            updateSkill($(this).data("id"), newName, function () {
+                $self.hide();
+                $inputText.prop('disabled', true);
+                makeToast('changes made');
+            });
+        }
     });
 
     //approve listener
@@ -221,7 +243,7 @@ function updateListeners() {
         var $parent = $(this).parent();
         var $submit = $("input.submit", $parent.parent());
         deleteSkill($submit.data("id"), function () {
-            $parent.parent().parent().hide();   //final parent is skill div
+            $parent.parent().parent().remove();   //final parent is skill div
             makeToast('Skill deleted');
         });
     });

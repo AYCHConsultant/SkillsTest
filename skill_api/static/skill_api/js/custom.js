@@ -12,7 +12,7 @@ $(document).ready(function () {
         finalSearchKey = $(this).val().trim().toLowerCase();
         // console.log(initialSearchKey);
         if (initialSearchKey !== finalSearchKey)
-            // fetchSkills(finalSearchKey);  // unoptimised search
+        // fetchSkills(finalSearchKey);  // unoptimised search
             search(finalSearchKey);         //optimised
         initialSearchKey = finalSearchKey;
     });
@@ -20,27 +20,31 @@ $(document).ready(function () {
     $(".add-card input.new-submit").click(function () {
         var $inputText = $("input#name", $(this).parent());
         var skillName = $inputText.val();
-        postSkill(skillName, function (skill) {
-            $inputText.val("");
-            addSkillToList(skill);
-            updateListeners();
-            // fetchSkills();
-            makeToast('New skill added');
-        });
+        if (skillName.trim() === "") {
+            alert("Skill should not be empty");
+        } else {
+            postSkill(skillName, function (skill) {
+                $inputText.val("");
+                addSkillToList(skill);
+                updateListeners();
+                // fetchSkills();
+                makeToast('New skill added');
+            });
+        }
     });
     fetchSkills();
 });
 
-function search(searchKey){
+function search(searchKey) {
     // console.log(searchKey);
-    $("input#name").each(function(){
-       var skill=$(this).val();
+    $("input#name").each(function () {
+        var skill = $(this).val();
         console.log(skill);
-        if(skill.toLowerCase().indexOf(searchKey)<0){
-               $(this).parent().parent().parent().hide();
-           }
-           else{
-            $(this).parent().parent().parent().css("display","block");
+        if (skill.toLowerCase().indexOf(searchKey) < 0) {
+            $(this).parent().parent().parent().hide();
+        }
+        else {
+            $(this).parent().parent().parent().css("display", "block");
         }
     });
 }
@@ -190,11 +194,15 @@ function updateListeners() {
         var $self = $(this);
         var $inputText = $("input#name", $self.parent());
         var newName = $inputText.val();
-        updateSkill($(this).data("id"), newName, function () {
-            $self.hide();
-            $inputText.prop('disabled', true);
-            makeToast('changes made');
-        });
+        if (newName.trim() === "") {
+            alert("Skill should not be empty");
+        } else {
+            updateSkill($(this).data("id"), newName, function () {
+                $self.hide();
+                $inputText.prop('disabled', true);
+                makeToast('changes made');
+            });
+        }
     });
 
     //approve listener
@@ -235,7 +243,7 @@ function updateListeners() {
         var $parent = $(this).parent();
         var $submit = $("input.submit", $parent.parent());
         deleteSkill($submit.data("id"), function () {
-            $parent.parent().parent().hide();   //final parent is skill div
+            $parent.parent().parent().remove();   //final parent is skill div
             makeToast('Skill deleted');
         });
     });

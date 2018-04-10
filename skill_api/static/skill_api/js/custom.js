@@ -67,6 +67,7 @@ function fetchSkills(searchQuery) {
             },
             error: function (xhr, status, err) {
                 console.log(err);
+                errorAlert();
             }
         });
 }
@@ -104,6 +105,7 @@ function updateSkill(id, updatedName, onSuccess) {
             },
             error: function (xhr, status, err) {
                 console.log(err);
+                errorAlert();
             }
         });
 
@@ -127,6 +129,7 @@ function updateSkillStatus(id, status, onSuccess) {
             },
             error: function (xhr, status, err) {
                 console.log(err);
+                errorAlert();
             }
         });
 }
@@ -147,6 +150,7 @@ function postSkill(skillName, onSuccess) {
             },
             error: function (xhr, status, err) {
                 console.log(err);
+                errorAlert();
             }
         });
 }
@@ -167,6 +171,7 @@ function deleteSkill(id, onSuccess) {
             },
             error: function (xhr, status, err) {
                 console.log(err);
+                errorAlert();
             }
         });
 }
@@ -254,4 +259,7 @@ function updateListeners() {
 function makeToast(msg) {
     M.Toast.dismissAll();
     M.toast({html: msg});
+}
+function errorAlert(){
+    alert("Some error occurred");
 }
